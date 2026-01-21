@@ -1,0 +1,62 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Store {
+  id           Int      @id @default(autoincrement())
+  shop         String?
+  store_name   String?
+  latitude     Float
+  longitude    Float
+  salesman_id  Int?
+  beat_id      Int?
+  salesman_name String?
+  beat_name     String?
+  created_at   DateTime @default(now())
+
+  salesman     Salesman? @relation(fields: [salesman_id], references: [id])
+  beat         Beat?     @relation(fields: [beat_id], references: [id])
+
+  @@index([shop, store_name])
+  @@index([latitude, longitude])
+  @@index([salesman_id])
+  @@index([beat_id])
+  @@map("stores")
+}
+
+model Salesman {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  email     String?
+  phone     String?
+  created_at DateTime @default(now())
+  stores    Store[]
+
+  @@map("salesmen")
+}
+
+model Beat {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  description String?
+  created_at DateTime @default(now())
+  stores    Store[]
+
+  @@map("beats")
+}
+
+model Settings {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("settings")
+}
