@@ -800,11 +800,101 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
         }
 
         // ============================================
-        // DATABASE SIMULATION (localStorage)
+        // API CONFIGURATION
+        // ============================================
+        const API_BASE = window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000/api' 
+            : '/api';
+
+        // ============================================
+        // API FUNCTIONS
+        // ============================================
+        const API = {
+            // Get all stores with optional filters
+            getStores: async (params = {}) => {
+                try {
+                    const queryString = new URLSearchParams(params).toString();
+                    const response = await fetch(`${API_BASE}/stores${queryString ? '?' + queryString : ''}`);
+                    const data = await response.json();
+                    return data;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { success: false, stores: [], dataVisible: true };
+                }
+            },
+
+            // Upload CSV data
+            uploadCSV: async (csvData) => {
+                try {
+                    const response = await fetch(`${API_BASE}/upload-csv`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ csvData })
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('Upload Error:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+
+            // Delete store(s)
+            deleteStore: async (id) => {
+                try {
+                    const response = await fetch(`${API_BASE}/stores?id=${id}`, {
+                        method: 'DELETE'
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('Delete Error:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+
+            // Delete all stores
+            clearAllStores: async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/stores?id=all`, {
+                        method: 'DELETE'
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('Clear Error:', error);
+                    return { success: false, error: error.message };
+                }
+            },
+
+            // Get settings
+            getSettings: async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/settings`);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Settings Error:', error);
+                    return { success: false, dataVisible: true };
+                }
+            },
+
+            // Update settings
+            updateSettings: async (key, value) => {
+                try {
+                    const response = await fetch(`${API_BASE}/settings`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ key, value })
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('Update Settings Error:', error);
+                    return { success: false, error: error.message };
+                }
+            }
+        };
+
+        // ============================================
+        // LOCAL STORAGE (for user data only)
         // ============================================
         const DB = {
-            getStores: () => JSON.parse(localStorage.getItem('stores') || '[]'),
-            setStores: (stores) => localStorage.setItem('stores', JSON.stringify(stores)),
             getUser: () => JSON.parse(localStorage.getItem('currentUser') || 'null'),
             setUser: (user) => localStorage.setItem('currentUser', JSON.stringify(user)),
             getRecentSearches: () => JSON.parse(localStorage.getItem('recentSearches') || '[]'),
@@ -814,9 +904,7 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 searches.unshift(term);
                 searches = searches.slice(0, 10);
                 localStorage.setItem('recentSearches', JSON.stringify(searches));
-            },
-            getDataVisibility: () => localStorage.getItem('dataVisibility') !== 'hidden',
-            setDataVisibility: (visible) => localStorage.setItem('dataVisibility', visible ? 'visible' : 'hidden')
+            }
         };
 
         // ============================================
@@ -1090,16 +1178,24 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
         // ============================================
         // ADMIN FUNCTIONS
         // ============================================
-        function toggleDataVisibility() {
-            const currentVisibility = DB.getDataVisibility();
+        async function toggleDataVisibility() {
+            const settings = await API.getSettings();
+            const currentVisibility = settings.dataVisible !== false;
             const newVisibility = !currentVisibility;
-            DB.setDataVisibility(newVisibility);
-            updateDataVisibilityUI();
-            showToast(t('dataVisibilityToggled') + ': ' + (newVisibility ? t('showData') : t('hideData')));
+            
+            const result = await API.updateSettings('dataVisibility', newVisibility ? 'visible' : 'hidden');
+            
+            if (result.success) {
+                updateDataVisibilityUI();
+                showToast(t('dataVisibilityToggled') + ': ' + (newVisibility ? t('showData') : t('hideData')));
+            } else {
+                showToast('Failed to update visibility', 'error');
+            }
         }
 
-        function updateDataVisibilityUI() {
-            const isVisible = DB.getDataVisibility();
+        async function updateDataVisibilityUI() {
+            const settings = await API.getSettings();
+            const isVisible = settings.dataVisible !== false;
             const statusCard = document.getElementById('visibilityStatusCard');
             const statusIcon = document.getElementById('visibilityStatusIcon');
             const statusTitle = document.getElementById('visibilityStatusTitle');

@@ -1,31 +1,25 @@
 {
   "name": "store-location-finder",
-  "version": "1.0.0",
-  "description": "Store Location Finder App for Delivery Personnel",
-  "main": "index.html",
+  "version": "2.0.0",
+  "description": "Store Location Finder App for Delivery Personnel with Vercel Backend",
   "scripts": {
-    "dev": "serve . -p 3000",
-    "start": "serve . -p 3000",
-    "build": "echo 'No build step required for static site'",
-    "preview": "serve . -p 3000"
+    "dev": "concurrently \"vercel dev\" \"serve -s . -l 3000\"",
+    "build": "prisma generate",
+    "start": "vercel dev",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio"
   },
-  "keywords": [
-    "delivery",
-    "gps",
-    "store-locator",
-    "maps",
-    "navigation"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "prisma": "^5.7.0"
+  },
   "devDependencies": {
-    "serve": "^14.2.0"
+    "concurrently": "^8.2.2",
+    "serve": "^14.2.1",
+    "vercel": "^32.7.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/store-location-finder.git"
-  },
-  "homepage": "https://your-app.vercel.app",
   "engines": {
     "node": ">=18.0.0"
   }
