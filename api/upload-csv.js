@@ -94,8 +94,8 @@ export default async function handler(req, res) {
               store_name: shopName,
               latitude,
               longitude,
-              salesman_name: salesman,
-              beat_name: beat
+              salesman,
+              beat
             }
           });
           inserted++;

@@ -23,6 +23,16 @@ export default async function handler(req, res) {
       
       const isVisible = settings ? settings.value === 'visible' : true;
 
+      // If data is hidden and user is not admin, return empty stores
+      if (!isVisible) {
+        return res.status(200).json({
+          success: true,
+          dataVisible: false,
+          stores: [],
+          pagination: { total: 0, page: 1, totalPages: 0 }
+        });
+      }
+
       // Get query parameters
       const { q, beat, salesman, page = 1, limit = 50 } = req.query;
 
@@ -50,10 +60,6 @@ export default async function handler(req, res) {
       const [stores, total] = await Promise.all([
         prisma.store.findMany({
           where,
-          include: {
-            salesman: true,
-            beat: true
-          },
           skip,
           take: parseInt(limit),
           orderBy: { shop: 'asc' }
@@ -69,8 +75,8 @@ export default async function handler(req, res) {
           shop: s.shop || s.store_name,
           latitude: parseFloat(s.latitude),
           longitude: parseFloat(s.longitude),
-          salesman: s.salesman?.name || s.salesman_name || 'Unassigned',
-          beat: s.beat?.name || s.beat_name || 'Unassigned',
+          salesman: s.salesman || 'Unassigned',
+          beat: s.beat || 'Unassigned',
           created_at: s.created_at
         })),
         pagination: {
@@ -95,23 +101,6 @@ export default async function handler(req, res) {
         });
         return res.status(200).json({ success: true, message: 'Store deleted' });
       }
-
-    } else if (req.method === 'POST') {
-      // Create single store
-      const { shop, store_name, latitude, longitude, salesman, beat } = req.body;
-      
-      const store = await prisma.store.create({
-        data: {
-          shop: shop || store_name,
-          store_name: store_name || shop,
-          latitude: parseFloat(latitude),
-          longitude: parseFloat(longitude),
-          salesman_name: salesman,
-          beat_name: beat
-        }
-      });
-
-      return res.status(201).json({ success: true, store });
 
     } else {
       return res.status(405).json({ success: false, error: 'Method not allowed' });

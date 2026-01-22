@@ -1,277 +1,442 @@
-# 🚀 Deployment Guide - Vercel
+# 🚀 Complete Deployment Guide - Vercel + MySQL Backend
 
-This guide will help you deploy the Store Location Finder app to Vercel in minutes.
+This guide will help you deploy the complete Store Location Finder app with backend persistence to Vercel.
 
-## 📋 Prerequisites
+## 📋 Overview
 
-- A [Vercel account](https://vercel.com/signup) (free)
-- A [GitHub account](https://github.com/signup)
-- Your project code pushed to GitHub
+**What you're deploying:**
+- ✅ Frontend: Single-page HTML application
+- ✅ Backend: Vercel Serverless Functions
+- ✅ Database: MySQL with Prisma ORM
+- ✅ CSV Upload: Persists to database
+- ✅ Data Visibility: Admin toggle control
 
-## 🛠️ Step-by-Step Deployment
+## 🎯 Deployment Options
 
-### Method 1: Deploy via Vercel Dashboard (Recommended)
+### Option 1: Free Plan (PlanetScale + Vercel) - RECOMMENDED
 
-#### 1. Prepare Your Repository
+**Total Cost: $0/month**
+
+| Service | Plan | Cost | Limits |
+|---------|------|------|--------|
+| Vercel | Hobby | Free | 100GB bandwidth, 6k minutes serverless |
+| PlanetScale | Scaler Pro (Free) | Free | 5GB storage, 1B reads/month |
+
+### Option 2: Paid Plans
+
+| Database | Starting Price |
+|----------|---------------|
+| PlanetScale Pro | $29/month |
+| Neon Serverless | $19/month |
+| Railway | $5/month |
+
+---
+
+## 📝 Step-by-Step Deployment
+
+### Step 1: Set Up Database (PlanetScale - Free)
+
+#### 1.1 Create PlanetScale Account
+1. Go to [planetscale.com](https://planetscale.com)
+2. Click "Sign Up" (use GitHub for quick setup)
+3. Verify your email
+
+#### 1.2 Create Database
+1. After login, click **"New database"**
+2. Fill in:
+   - **Database Name**: `store_locator`
+   - **Region**: Select closest to you
+3. Click **"Create database"**
+
+#### 1.3 Get Connection String
+1. Click on your database
+2. Go to **Settings** → **Connect**
+3. Select **"Prisma"** from the dropdown
+4. Copy the **DATABASE_URL** - it looks like:
+   ```
+   mysql://xxxxx:pscale_pw_xxxxx@aws.connect.psdb.cloud/store_locator?sslaccept=strict
+   ```
+5. **Save this URL** - you'll need it for Vercel
+
+#### 1.4 Enable Branch Protection (Optional but Recommended)
+1. Go to **Settings** → **Branches**
+2. Enable "Protect main branch"
+
+---
+
+### Step 2: Push Code to GitHub
+
+#### 2.1 Prepare Your Repository
+
 ```bash
-# Clone your repository
+# Clone the repository (if you haven't)
 git clone https://github.com/yourusername/store-location-finder.git
 cd store-location-finder
 
-# Ensure all files are present
-ls -la
-# You should see: index.html, vercel.json, README.md, etc.
+# Install dependencies
+npm install
 
-# Commit and push
+# Generate Prisma Client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push --force-reset
+```
+
+#### 2.2 Commit and Push
+
+```bash
+# Add all files
 git add .
-git commit -m "Ready for Vercel deployment"
+
+# Commit changes
+git commit -m "Add backend with Prisma and Vercel API"
+
+# Push to GitHub
 git push origin main
 ```
 
-#### 2. Deploy to Vercel
-1. Go to [vercel.com](https://vercel.com) and sign in
-2. Click **"Add New..."** → **"Project"**
-3. Find and import your `store-location-finder` repository
-4. Vercel will auto-detect the project settings
-5. Click **"Deploy"**
+**Make sure your repository is public or you've connected Vercel to private GitHub.**
 
-#### 3. That's It! 🎉
-Your app will be live at:
-```
-https://store-location-finder.vercel.app
-```
+---
 
-### Method 2: Deploy via Vercel CLI
+### Step 3: Deploy to Vercel
 
-#### 1. Install Vercel CLI
+#### 3.1 Create Vercel Account
+1. Go to [vercel.com](https://vercel.com)
+2. Click "Sign Up" (use GitHub)
+3. Complete setup
+
+#### 3.2 Import Project
+1. On Vercel dashboard, click **"Add New"** → **"Project"**
+2. Find and select `store-location-finder` repository
+3. Click **"Import"**
+
+#### 3.3 Configure Project
+1. **Framework Preset**: Select "Other"
+2. **Root Directory**: `./` (default)
+3. **Build Command**: Leave empty
+4. **Output Directory**: Leave empty
+
+#### 3.4 Add Environment Variables (CRITICAL!)
+
+In the "Environment Variables" section, add:
+
+| Key | Value | Environments |
+|-----|-------|--------------|
+| `DATABASE_URL` | (Your PlanetScale connection string) | All (Production, Preview, Development) |
+| `ADMIN_USERNAME` | `Harshil` | Production |
+| `ADMIN_PASSWORD` | `Harshil@2003` | Production |
+
+**Important**: For `DATABASE_URL`, use the one you copied from PlanetScale including `?sslaccept=strict`
+
+#### 3.5 Deploy
+1. Click **"Deploy"**
+2. Wait for deployment to complete (1-2 minutes)
+3. Your app is live! 🎉
+
+---
+
+### Step 4: Post-Deployment Setup
+
+#### 4.1 Initialize Database
+
+After first deployment, you need to create the tables:
+
 ```bash
-npm install -g vercel
+# Locally, run:
+npx prisma db push
+
+# This creates all tables: stores, salesmen, beats, settings
 ```
 
-#### 2. Login to Vercel
+**Alternative**: You can also run this via Vercel CLI:
 ```bash
-vercel login
+vercel env pull .env
+npx prisma db push
 ```
 
-#### 3. Deploy
+#### 4.2 Verify API Endpoints
+
+Test these URLs in your browser or with curl:
+
 ```bash
-# Navigate to your project
-cd store-location-finder
+# Get stores
+curl https://your-app.vercel.app/api/stores
 
-# Deploy
-vercel
-
-# Follow the prompts:
-# - Set up and deploy? Yes
-# - Link to existing project? No
-# - Project name: store-location-finder
-# - Directory: ./
-# - Override settings? No
+# Get settings
+curl https://your-app.vercel.app/api/settings
 ```
 
-#### 4. Deploy to Production
-```bash
-vercel --prod
-```
-
-## 🔧 Vercel Configuration
-
-The `vercel.json` file is already included in your project:
-
+Expected response:
 ```json
 {
-  "version": 2,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ]
+  "success": true,
+  "dataVisible": true,
+  "stores": [],
+  "pagination": {...}
 }
 ```
 
-This ensures:
-- ✅ Single Page Application routing works
-- ✅ All paths redirect to index.html
-- ✅ Security headers are set
+#### 4.3 Test CSV Upload
 
-## 🌐 Custom Domain Setup
+1. Visit your app: `https://your-app.vercel.app`
+2. Go to admin: `https://your-app.vercel.app/#/admin`
+3. Login with `Harshil` / `Harshil@2003`
+4. Upload the sample CSV file
+5. Verify upload summary shows inserted stores
 
-### Option 1: Use Vercel Subdomain (Free)
-Your app automatically gets:
-```
-https://your-project-name.vercel.app
-```
+---
 
-### Option 2: Add Custom Domain
-1. Go to your project on Vercel Dashboard
-2. Click **Settings** → **Domains**
-3. Add your domain (e.g., `storefinder.yourdomain.com`)
-4. Update DNS records as instructed by Vercel
+### Step 5: Configure Custom Domain (Optional)
 
-### Free DNS Providers
-- [Cloudflare](https://www.cloudflare.com/) (recommended)
-- [Namecheap](https://www.namecheap.com/)
-- [GoDaddy](https://www.godaddy.com/)
+#### 5.1 Add Domain on Vercel
+1. Go to project **Settings** → **Domains**
+2. Add your domain (e.g., `store.yourdomain.com`)
+3. Vercel will show DNS records to add
 
-## 🔄 Automatic Deployments
+#### 5.2 Update DNS
+Go to your domain registrar (Namecheap, GoDaddy, Cloudflare) and add:
 
-### Setup Git Integration
-Once connected to GitHub, Vercel will:
+| Type | Name | Value |
+|------|------|-------|
+| CNAME | store | cname.vercel-dns.com |
 
-1. **Auto-deploy on push** to main branch
-2. **Preview deployments** for pull requests
-3. **Rollback** to any previous deployment
+---
 
-### Deployment Workflow
+## 🔧 Local Development Setup
+
+To develop locally with the backend:
+
 ```bash
-# Make changes
-git add .
-git commit -m "Add new feature"
-git push origin main
+# Install dependencies
+npm install
 
-# Vercel automatically deploys! 🚀
+# Copy .env.example to .env
+cp .env.example .env
+
+# Edit .env and add your DATABASE_URL
+# DATABASE_URL="mysql://user:pass@host:3306/store_locator"
+
+# Generate Prisma Client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# Start local development server
+npm run dev
 ```
 
-## 📊 Environment Variables (Optional)
+Your app will be available at `http://localhost:3000`
 
-For future backend integration:
+---
 
-1. Go to **Settings** → **Environment Variables**
-2. Add your variables:
-   ```
-   NODE_ENV = production
-   DATABASE_URL = mysql://...
-   JWT_SECRET = your-secret
-   ```
+## 📊 Database Management
 
-## 🔍 Troubleshooting
+### View Database with Prisma Studio
 
-### Issue: Build Fails
-**Solution:** This is a static site, no build should run. Check `vercel.json` configuration.
+```bash
+npx prisma studio
+```
 
-### Issue: Page Not Found on Refresh
-**Solution:** The `vercel.json` routes configuration should handle this. Ensure `dest: "/index.html"` is set.
+This opens a GUI to view and edit your database tables at `http://localhost:5555`
 
-### Issue: Styles Not Loading
-**Solution:** Ensure Tailwind CSS CDN is accessible. Check internet connection.
+### Connect External Tools
 
-### Issue: LocalStorage Not Working
-**Solution:** This is browser-specific. Test in:
-- Chrome/Edge (Works)
-- Firefox (Works)
-- Safari (Works)
-- Incognito mode (May not work - this is expected)
+For your PlanetScale database:
 
-## 📈 Performance Optimization
+1. **MySQL Workbench / TablePlus**:
+   - Host: from PlanetScale Connect page
+   - Username: from PlanetScale
+   - Password: from PlanetScale
 
-Vercel automatically optimizes:
-- ✅ Global CDN distribution
-- ✅ Automatic HTTP/2
-- ✅ Image optimization (if using next/image)
-- ✅ Edge caching
+2. **VS Code Extension**:
+   - Install "MySQL" extension
+   - Use connection string from PlanetScale
 
-### Manual Optimizations
-- Use compressed assets
-- Minimize external dependencies
-- Enable compression (automatic on Vercel)
+---
 
-## 🔐 Security
+## 🔄 Update & Redeploy
 
-### Headers Configured
-The `vercel.json` includes security headers:
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `X-XSS-Protection: 1; mode=block`
-- `Referrer-Policy: strict-origin-when-cross-origin`
+### When You Make Changes
 
-### Additional Security Tips
-- Keep dependencies updated
-- Use HTTPS (automatic on Vercel)
-- Implement proper auth for production
+```bash
+# Make your changes
+# ... edit files ...
 
-## 📱 Progressive Web App (PWA)
+# Install new dependencies if any
+npm install
 
-Your app includes PWA support via `manifest.json`:
+# Regenerate Prisma Client if schema changed
+npx prisma generate
 
-### Install on Mobile
-1. Open app in Chrome/Safari
-2. Tap **"Share"** → **"Add to Home Screen"**
-3. App installs like native app
+# Commit
+git add .
+git commit -m "Your commit message"
+git push origin main
+```
 
-### PWA Benefits
-- ✅ Works offline (with caching)
-- ✅ App icon on home screen
-- ✅ Full-screen mode
-- ✅ Push notification ready
+**Vercel will auto-deploy on push!** 🚀
+
+### When You Update Database Schema
+
+```bash
+# After editing prisma/schema.prisma
+npx prisma generate
+npx prisma db push
+git add .
+git commit -m "Update database schema"
+git push
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Issue: Deployment Fails - "Prisma Client not found"
+
+**Solution**:
+1. Add `"postinstall": "prisma generate"` to `package.json` scripts
+2. Push to GitHub
+3. Redeploy on Vercel
+
+### Issue: Database Connection Error
+
+**Solution**:
+1. Verify `DATABASE_URL` is correct in Vercel environment variables
+2. Make sure it includes `?sslaccept=strict` for PlanetScale
+3. Check if your database branch is "main"
+
+### Issue: API Returns 404
+
+**Solution**:
+1. Ensure `api/` folder is at repository root
+2. Check `vercel.json` has correct routes configuration
+3. Verify files were pushed to GitHub
+
+### Issue: Data Not Persisting
+
+**Solution**:
+1. Check browser console for API errors
+2. Verify Vercel function logs
+3. Test API endpoints directly with curl
+4. Check database has tables (use Prisma Studio)
+
+### Issue: "Environment variable not set"
+
+**Solution**:
+1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
+2. Add `DATABASE_URL` and other variables
+3. Redeploy from Deployments tab
+
+---
+
+## 📈 Scaling & Performance
+
+### Vercel Limits (Free Tier)
+- 100 GB bandwidth per month
+- 6,000 minutes of serverless execution
+- 100 GB-Hours of serverless function execution
+
+### When to Upgrade
+
+**Upgrade when**:
+- You hit bandwidth limits (many users)
+- API execution time exceeds limits
+- You need advanced features
+
+**Vercel Pro**: $20/month
+- 1 TB bandwidth
+- Unlimited serverless execution
+- Faster builds
+
+---
+
+## 🔒 Security Best Practices
+
+### 1. Environment Variables
+- ✅ Never commit `.env` to git
+- ✅ Use different values for production/development
+- ✅ Rotate credentials regularly
+
+### 2. Database
+- ✅ Use SSL connections (Planetscale requires it)
+- ✅ Limit database user permissions
+- ✅ Enable branch protection
+
+### 3. API
+- ✅ Add rate limiting (Vercel Edge Middleware)
+- ✅ Implement proper authentication for production
+- ✅ Validate all inputs
+
+### 4. Frontend
+- ✅ Use HTTPS (automatic on Vercel)
+- ✅ Implement Content Security Policy
+- ✅ Sanitize user inputs
+
+---
+
+## 📊 Monitoring
+
+### Vercel Dashboard
+- View real-time logs
+- Monitor function execution time
+- Check bandwidth usage
+- Set up alerts
+
+### PlanetScale Dashboard
+- Monitor queries per second
+- View storage usage
+- Check connection metrics
+- Enable query insights
+
+---
 
 ## 🎯 Production Checklist
 
 Before going live:
 
-- [ ] Update `og-image.png` for social sharing
-- [ ] Update URLs in README.md
-- [ ] Set custom domain
-- [ ] Test on mobile devices
-- [ ] Test CSV upload functionality
-- [ ] Test Google Maps navigation
-- [ ] Verify all user flows work
-- [ ] Set up error monitoring (optional)
-- [ ] Configure analytics (optional)
-
-## 📊 Analytics Integration
-
-### Vercel Analytics
-```bash
-npm install @vercel/analytics
-```
-
-Add to `index.html`:
-```html
-<script src="https://cdn.jsdelivr.net/npm/@vercel/analytics/dist/analytics.umd.js"></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); }
-  va('init', {
-    mode: 'auto',
-    debug: false,
-  });
-</script>
-```
-
-### Google Analytics
-Add your GA4 tracking ID to index.html:
-```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
-```
-
-## 🆘 Support
-
-### Vercel Documentation
-- [Vercel Docs](https://vercel.com/docs)
-- [Deployment Guide](https://vercel.com/docs/deployments/overview)
-- [Custom Domains](https://vercel.com/docs/custom-domains)
-
-### Common Issues
-- [Troubleshooting](https://vercel.com/docs/deployments/troubleshooting)
-- [FAQ](https://vercel.com/docs/concepts/faq)
-
-## 🚀 Next Steps
-
-After successful deployment:
-
-1. **Share your app** with the delivery team
-2. **Collect feedback** from users
-3. **Monitor performance** via Vercel dashboard
-4. **Set up custom domain** for professional branding
-5. **Add analytics** to track usage
-6. **Iterate** based on user feedback
+- [ ] Database set up and accessible
+- [ ] `DATABASE_URL` added to Vercel environment
+- [ ] Admin credentials set in environment
+- [ ] Prisma schema pushed to database
+- [ ] API endpoints tested
+- [ ] CSV upload tested
+- [ ] Data visibility toggle tested
+- [ ] Delivery boy access tested
+- [ ] Custom domain configured (optional)
+- [ ] Error monitoring set up (optional)
+- [ ] Analytics configured (optional)
 
 ---
 
-**Your Store Location Finder is now live on Vercel! 🎉**
+## 📞 Resources
+
+### Documentation
+- [Vercel Docs](https://vercel.com/docs)
+- [Prisma Docs](https://www.prisma.io/docs)
+- [PlanetScale Docs](https://docs.planetscale.com)
+
+### Help & Support
+- [Vercel Support](https://vercel.com/support)
+- [Prisma Discord](https://discord.gg/prisma)
+- [PlanetScale Discord](https://discord.gg/planetscale)
+
+---
+
+## 🎉 You're Live!
+
+Your Store Location Finder app is now deployed with:
+
+✅ Persistent database storage  
+✅ Admin CSV upload functionality  
+✅ Data visibility toggle  
+✅ Delivery boy search and navigation  
+✅ Auto-scaling with Vercel  
+✅ Free hosting with PlanetScale  
+
+**Admin URL**: `https://your-app.vercel.app/#/admin`  
+**Delivery URL**: `https://your-app.vercel.app`
+
+Happy delivering! 🛵📦

@@ -205,22 +205,9 @@ stores
 ├── store_name
 ├── latitude
 ├── longitude
-├── salesman_id (Foreign Key)
-├── beat_id (Foreign Key)
-├── salesman_name
-├── beat_name
+├── salesman
+├── beat
 └── created_at
-
-salesmen
-├── id
-├── name
-├── email
-└── phone
-
-beats
-├── id
-├── name
-└── description
 
 settings
 ├── id
@@ -250,7 +237,7 @@ npx prisma generate
 **Solution**:
 1. Ensure `api/` folder is at root level
 2. Check `vercel.json` has correct routes
-3. Redeploy on Vercel
+3. Verify files were pushed to GitHub
 
 ### Issue: Environment Variables Not Working
 
@@ -280,14 +267,17 @@ npx prisma studio
 
 ## 🚀 Production Checklist
 
-- [ ] Database URL added to environment variables
-- [ ] Admin credentials set
-- [ ] SSL enabled on database
-- [ ] Test all API endpoints
-- [ ] Test CSV upload
-- [ ] Test data visibility toggle
-- [ ] Set up custom domain (optional)
-- [ ] Enable analytics (optional)
+- [ ] Database set up and accessible
+- [ ] `DATABASE_URL` added to Vercel environment
+- [ ] Admin credentials set in environment
+- [ ] Prisma schema pushed to database
+- [ ] API endpoints tested
+- [ ] CSV upload tested
+- [ ] Data visibility toggle tested
+- [ ] Delivery boy access tested
+- [ ] Custom domain configured (optional)
+- [ ] Error monitoring set up (optional)
+- [ ] Analytics configured (optional)
 
 ## 📞 Support
 

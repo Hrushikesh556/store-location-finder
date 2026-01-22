@@ -904,6 +904,19 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 searches.unshift(term);
                 searches = searches.slice(0, 10);
                 localStorage.setItem('recentSearches', JSON.stringify(searches));
+            },
+            // Legacy methods for API compatibility
+            getStores: async () => {
+                const result = await API.getStores();
+                return result.stores || [];
+            },
+            setStores: async (stores) => {
+                // Stores are now managed via API, not localStorage
+                console.log('Stores are now persisted via API');
+            },
+            getDataVisibility: async () => {
+                const settings = await API.getSettings();
+                return settings.dataVisible !== false;
             }
         };
 
