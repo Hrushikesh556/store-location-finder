@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="Store Location Finder App for Delivery Personnel - Search stores and navigate with Google Maps">
     <meta name="keywords" content="delivery, gps, store locator, maps, navigation, logistics">
     <meta name="author" content="Store Location Finder">
@@ -61,48 +61,157 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* Mobile-first responsive improvements */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        body {
+            padding: 0;
+            margin: 0;
+            padding-right: 0 !important;
+        }
+        
+        /* Safe area insets for mobile */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(0px, env(safe-area-inset-left));
+                padding-right: max(0px, env(safe-area-inset-right));
+            }
+        }
+        
+        /* Mobile touch-friendly buttons */
+        button {
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+        }
+        
+        /* Mobile input styling */
+        input, select {
+            min-height: 44px;
+            font-size: 16px !important; /* Prevents zoom on iOS */
+        }
+        
+        /* Scrollbar styling for mobile */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        /* Prevent horizontal scroll */
+        .no-overflow-x {
+            overflow-x: hidden;
+        }
+        
+        /* Mobile table horizontal scroll */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
         /* RTL support for Marathi */
         [dir="rtl"] {
             direction: rtl;
         }
-        [dir="rtl"] .mr-2 { margin-right: 0; margin-left: 0.5rem; }
-        [dir="rtl"] .mr-1 { margin-right: 0; margin-left: 0.25rem; }
-        [dir="rtl"] .mr-3 { margin-right: 0; margin-left: 0.75rem; }
-        [dir="rtl"] .mr-4 { margin-right: 0; margin-left: 1rem; }
-        [dir="rtl"] .ml-2 { margin-left: 0; margin-right: 0.5rem; }
-        [dir="rtl"] .text-right { text-align: left; }
-        [dir="rtl"] .text-left { text-align: right; }
+        [dir="rtl"] .mr-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+        [dir="rtl"] .mr-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+        [dir="rtl"] .mr-3 { margin-right: 0 !important; margin-left: 0.75rem !important; }
+        [dir="rtl"] .mr-4 { margin-right: 0 !important; margin-left: 1rem !important; }
+        [dir="rtl"] .ml-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+        [dir="rtl"] .text-right { text-align: left !important; }
+        [dir="rtl"] .text-left { text-align: right !important; }
+        
+        /* Mobile-specific adjustments */
+        @media (max-width: 640px) {
+            .mobile-p-0 { padding: 0 !important; }
+            .mobile-p-1 { padding: 0.25rem !important; }
+            .mobile-p-2 { padding: 0.5rem !important; }
+            .mobile-p-3 { padding: 0.75rem !important; }
+            .mobile-p-4 { padding: 1rem !important; }
+            
+            .mobile-pr-0 { padding-right: 0 !important; }
+            .mobile-pr-1 { padding-right: 0.25rem !important; }
+            .mobile-pr-2 { padding-right: 0.5rem !important; }
+            .mobile-pr-3 { padding-right: 0.75rem !important; }
+            .mobile-pr-4 { padding-right: 1rem !important; }
+            
+            .mobile-pl-0 { padding-left: 0 !important; }
+            .mobile-pl-1 { padding-left: 0.25rem !important; }
+            .mobile-pl-2 { padding-left: 0.5rem !important; }
+            .mobile-pl-3 { padding-left: 0.75rem !important; }
+            .mobile-pl-4 { padding-left: 1rem !important; }
+            
+            .mobile-px-2 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .mobile-px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+            .mobile-px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+            
+            /* Ensure no right overflow */
+            .w-full-mobile {
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            
+            /* Modal mobile full screen */
+            .modal-mobile {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: 100% !important;
+                max-height: 100% !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-100 min-h-screen no-overflow-x">
     <!-- Login Screen -->
-    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4 sm:p-6 md:p-8">
         <!-- Language Toggle -->
-        <div class="fixed top-4 right-4 z-50">
-            <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+        <div class="fixed top-3 sm:top-4 right-3 sm:right-4 z-50">
+            <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-sm sm:text-base">
                 <i class="fas fa-globe"></i>
                 <span id="langToggleText">मराठी</span>
             </button>
         </div>
         
-        <div class="bg-white rounded-2xl card-shadow p-8 w-full max-w-md slide-up">
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-map-marker-alt text-white text-3xl"></i>
+        <div class="bg-white rounded-2xl card-shadow p-4 sm:p-6 md:p-8 w-full max-w-md slide-up mobile-p-4">
+            <div class="text-center mb-6 sm:mb-8">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <i class="fas fa-map-marker-alt text-white text-2xl sm:text-3xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-800" data-i18n="appTitle">Store Locator</h1>
-                <p class="text-gray-500 mt-2" data-i18n="appSubtitle">Delivery Boy GPS App</p>
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-800" data-i18n="appTitle">Store Locator</h1>
+                <p class="text-gray-500 mt-1 sm:mt-2 text-sm sm:text-base" data-i18n="appSubtitle">Delivery Boy GPS App</p>
             </div>
             
             <div class="space-y-4">
                 <!-- Delivery Login Section (Default) -->
                 <div id="deliveryLoginSection">
-                    <div class="text-center py-6">
-                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-truck text-green-600 text-2xl"></i>
+                    <div class="text-center py-4 sm:py-6">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <i class="fas fa-truck text-green-600 text-xl sm:text-2xl"></i>
                         </div>
-                        <p class="text-gray-600 mb-4" data-i18n="deliveryDesc">Search & Navigate to Stores</p>
-                        <button onclick="login('delivery')" class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-semibold transition-all text-lg">
+                        <p class="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base" data-i18n="deliveryDesc">Search & Navigate to Stores</p>
+                        <button onclick="login('delivery')" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 sm:py-4 rounded-xl font-semibold transition-all text-base sm:text-lg">
                             <i class="fas fa-play mr-2"></i><span data-i18n="delivery">Delivery Boy Login</span>
                         </button>
                     </div>
@@ -132,64 +241,65 @@
                         <button onclick="submitLogin()" class="flex-1 bg-gradient-to-r from-purple-500 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-all">
                             <span data-i18n="loginBtn">Login</span>
                         </button>
-                        <button onclick="goToDelivery()" class="px-4 py-3 bg-gray-200 hover:bg-gray-300 rounded-lg transition-all">
+                        <button onclick="goToDelivery()" class="px-3 py-3 sm:px-4 bg-gray-200 hover:bg-gray-300 rounded-lg transition-all">
                             <i class="fas fa-arrow-left"></i>
                         </button>
                     </div>
                 </div>
             </div>
             
-            <p class="text-center text-gray-400 text-sm mt-6" id="demoHint">
-                <i class="fas fa-info-circle mr-1"></i> <span data-i18n="demoHint">Delivery Boy App - Click to Start</span>
+            <p class="text-center text-gray-400 text-xs sm:text-sm mt-4 sm:mt-6" id="demoHint">
+                <i class="fas fa-info-circle mr-1"></i> <span data-i18n="demoHint">Demo: Click any role to login</span>
             </p>
         </div>
     </div>
 
     <!-- Admin Dashboard -->
-    <div id="adminDashboard" class="hidden min-h-screen">
+    <div id="adminDashboard" class="hidden min-h-screen no-overflow-x">
         <!-- Admin Header -->
-        <header class="gradient-bg text-white p-4 sticky top-0 z-50">
-            <div class="max-w-6xl mx-auto flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-store text-2xl"></i>
-                    <h1 class="text-xl font-bold" data-i18n="adminDashboard">Admin Dashboard</h1>
+        <header class="gradient-bg text-white p-3 sm:p-4 sticky top-0 z-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <i class="fas fa-store text-xl sm:text-2xl"></i>
+                    <h1 class="text-base sm:text-xl font-bold" data-i18n="adminDashboard">Admin Dashboard</h1>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 sm:space-x-4">
                     <!-- Language Toggle -->
-                    <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
-                        <i class="fas fa-globe"></i>
-                        <span id="adminLangToggle">मराठी</span>
+                    <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 px-2 py-2 sm:px-3 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-globe text-sm"></i>
+                        <span id="adminLangToggle" class="hidden sm:inline">मराठी</span>
                     </button>
                     <!-- Data Visibility Toggle -->
-                    <button id="dataVisibilityToggle" onclick="toggleDataVisibility()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-all flex items-center gap-2">
+                    <button id="dataVisibilityToggle" onclick="toggleDataVisibility()" class="bg-white/20 hover:bg-white/30 px-2 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-xs sm:text-sm">
                         <i class="fas fa-eye" id="visibilityIcon"></i>
-                        <span id="visibilityText" data-i18n="showData">Show Data</span>
+                        <span id="visibilityText" data-i18n="showData" class="hidden sm:inline">Show Data</span>
                     </button>
-                    <span class="text-sm bg-white/20 px-3 py-1 rounded-full">
+                    <span class="text-xs sm:text-sm bg-white/20 px-2 py-1 rounded-full">
                         <i class="fas fa-database mr-1"></i>
                         <span id="storeCount">0</span> <span data-i18n="stores">Stores</span>
                     </span>
-                    <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-all">
-                        <i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="logout">Logout</span>
+                    <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-2 py-2 sm:px-4 sm:py-2 rounded-lg transition-all text-xs sm:text-sm">
+                        <i class="fas fa-sign-out-alt mr-1 hidden sm:inline"></i><span data-i18n="logout" class="hidden sm:inline">Logout</span>
+                        <i class="fas fa-sign-out-alt sm:hidden"></i>
                     </button>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-6xl mx-auto p-4 space-y-6">
+        <main class="p-2 sm:p-4 md:p-4 lg:max-w-6xl lg:mx-auto space-y-4 sm:space-y-6 no-overflow-x">
             <!-- Data Visibility Status -->
-            <div id="visibilityStatusCard" class="bg-white rounded-2xl card-shadow p-6 slide-up">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <div id="visibilityStatusIcon" class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-eye text-green-600 text-xl"></i>
+            <div id="visibilityStatusCard" class="bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <div class="flex items-center w-full sm:w-auto">
+                        <div id="visibilityStatusIcon" class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                            <i class="fas fa-eye text-green-600 text-lg sm:text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-bold text-gray-800" id="visibilityStatusTitle" data-i18n="dataVisible">Data is Visible to Delivery Boys</h3>
-                            <p class="text-gray-500 text-sm" id="visibilityStatusDesc" data-i18n="dataVisibleDesc">Delivery boys can search and navigate to all stores</p>
+                            <h3 class="text-base sm:text-lg font-bold text-gray-800" id="visibilityStatusTitle" data-i18n="dataVisible">Data is Visible to Delivery Boys</h3>
+                            <p class="text-gray-500 text-xs sm:text-sm" id="visibilityStatusDesc" data-i18n="dataVisibleDesc">Delivery boys can search and navigate to all stores</p>
                         </div>
                     </div>
-                    <button onclick="toggleDataVisibility()" class="px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2" id="visibilityActionButton">
+                    <button onclick="toggleDataVisibility()" class="w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-sm" id="visibilityActionButton">
                         <i class="fas fa-eye-slash" id="actionIcon"></i>
                         <span data-i18n="hideData">Hide Data</span>
                     </button>
@@ -197,70 +307,72 @@
             </div>
 
             <!-- Upload Section -->
-            <div class="bg-white rounded-2xl card-shadow p-6 slide-up">
-                <div class="flex items-center justify-between mb-6">
+            <div class="bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-800">
                             <i class="fas fa-upload text-purple-600 mr-2"></i><span data-i18n="uploadCsv">Upload Stores CSV</span>
                         </h2>
-                        <p class="text-gray-500 text-sm mt-1" data-i18n="uploadDesc">Import store locations from spreadsheet</p>
+                        <p class="text-gray-500 text-xs sm:text-sm mt-1" data-i18n="uploadDesc">Import store locations from spreadsheet</p>
                     </div>
                 </div>
 
                 <!-- File Upload Area -->
-                <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-purple-500 transition-all cursor-pointer">
+                <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-xl p-4 sm:p-6 md:p-8 text-center hover:border-purple-500 transition-all cursor-pointer">
                     <input type="file" id="csvFile" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
-                    <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600 font-medium" data-i18n="dropZone">Drop CSV file here or click to browse</p>
-                    <p class="text-gray-400 text-sm mt-2" data-i18n="supportsCsv">Supports .csv format</p>
-                    <button onclick="document.getElementById('csvFile').click()" class="mt-4 bg-purple-100 text-purple-700 px-6 py-2 rounded-lg hover:bg-purple-200 transition-all">
+                    <i class="fas fa-cloud-upload-alt text-4xl sm:text-5xl text-gray-400 mb-3 sm:mb-4"></i>
+                    <p class="text-gray-600 font-medium text-sm sm:text-base" data-i18n="dropZone">Drop CSV file here or click to browse</p>
+                    <p class="text-gray-400 text-xs sm:text-sm mt-2" data-i18n="supportsCsv">Supports .csv format</p>
+                    <button onclick="document.getElementById('csvFile').click()" class="mt-3 sm:mt-4 bg-purple-100 text-purple-700 px-4 sm:px-6 py-2 rounded-lg hover:bg-purple-200 transition-all text-sm">
                         <span data-i18n="selectFile">Select File</span>
                     </button>
                 </div>
 
                 <!-- CSV Format Guide -->
-                <div class="mt-6 bg-gray-50 rounded-xl p-4">
-                    <h3 class="font-semibold text-gray-700 mb-3">
+                <div class="mt-4 sm:mt-6 bg-gray-50 rounded-xl p-3 sm:p-4">
+                    <h3 class="font-semibold text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">
                         <i class="fas fa-info-circle text-blue-500 mr-2"></i><span data-i18n="csvFormat">CSV Format</span>
                     </h3>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-lg p-3">
+                    <div class="grid md:grid-cols-2 gap-3 sm:gap-4">
+                        <div class="bg-white rounded-lg p-2 sm:p-3">
                             <p class="text-xs text-gray-500 mb-2" data-i18n="requiredHeaders">Required Headers:</p>
-                            <code class="text-sm bg-gray-200 px-2 py-1 rounded">shop</code>
-                            <code class="text-sm bg-gray-200 px-2 py-1 rounded">latitude</code>
-                            <code class="text-sm bg-gray-200 px-2 py-1 rounded">longitude</code>
-                            <code class="text-sm bg-gray-200 px-2 py-1 rounded">salesman</code>
-                            <code class="text-sm bg-gray-200 px-2 py-1 rounded">beat</code>
+                            <div class="flex flex-wrap gap-1 sm:gap-2">
+                                <code class="text-xs sm:text-sm bg-gray-200 px-1.5 sm:px-2 py-1 rounded">shop</code>
+                                <code class="text-xs sm:text-sm bg-gray-200 px-1.5 sm:px-2 py-1 rounded">latitude</code>
+                                <code class="text-xs sm:text-sm bg-gray-200 px-1.5 sm:px-2 py-1 rounded">longitude</code>
+                                <code class="text-xs sm:text-sm bg-gray-200 px-1.5 sm:px-2 py-1 rounded">salesman</code>
+                                <code class="text-xs sm:text-sm bg-gray-200 px-1.5 sm:px-2 py-1 rounded">beat</code>
+                            </div>
                         </div>
-                        <div class="bg-white rounded-lg p-3">
+                        <div class="bg-white rounded-lg p-2 sm:p-3">
                             <p class="text-xs text-gray-500 mb-2" data-i18n="sampleData">Sample Data:</p>
                             <pre class="text-xs bg-gray-200 p-2 rounded overflow-x-auto">shop,latitude,longitude,salesman,beat
 ABC Store,28.6139,77.2090,John,North Zone
 XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                         </div>
                     </div>
-                    <button onclick="loadSampleData()" class="mt-4 text-purple-600 hover:text-purple-800 text-sm font-medium">
+                    <button onclick="loadSampleData()" class="mt-3 sm:mt-4 text-purple-600 hover:text-purple-800 text-sm font-medium">
                         <i class="fas fa-magic mr-1"></i><span data-i18n="loadSample">Load Sample Data</span>
                     </button>
                 </div>
 
                 <!-- Upload Summary -->
-                <div id="uploadSummary" class="hidden mt-6 bg-green-50 border border-green-200 rounded-xl p-4">
-                    <div class="flex items-center text-green-700 mb-3">
-                        <i class="fas fa-check-circle text-2xl mr-3"></i>
-                        <h3 class="font-bold text-lg" data-i18n="uploadComplete">Upload Complete!</h3>
+                <div id="uploadSummary" class="hidden mt-4 sm:mt-6 bg-green-50 border border-green-200 rounded-xl p-3 sm:p-4">
+                    <div class="flex items-center text-green-700 mb-2 sm:mb-3">
+                        <i class="fas fa-check-circle text-xl sm:text-2xl mr-2 sm:mr-3"></i>
+                        <h3 class="font-bold text-base sm:text-lg" data-i18n="uploadComplete">Upload Complete!</h3>
                     </div>
-                    <div class="grid grid-cols-3 gap-4 text-center">
-                        <div class="bg-white rounded-lg p-3">
-                            <p class="text-2xl font-bold text-gray-800" id="totalRows">0</p>
+                    <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                        <div class="bg-white rounded-lg p-2 sm:p-3">
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="totalRows">0</p>
                             <p class="text-xs text-gray-500" data-i18n="totalRows">Total Rows</p>
                         </div>
-                        <div class="bg-white rounded-lg p-3">
-                            <p class="text-2xl font-bold text-green-600" id="insertedRows">0</p>
+                        <div class="bg-white rounded-lg p-2 sm:p-3">
+                            <p class="text-xl sm:text-2xl font-bold text-green-600" id="insertedRows">0</p>
                             <p class="text-xs text-gray-500" data-i18n="inserted">Inserted</p>
                         </div>
-                        <div class="bg-white rounded-lg p-3">
-                            <p class="text-2xl font-bold text-orange-500" id="skippedRows">0</p>
+                        <div class="bg-white rounded-lg p-2 sm:p-3">
+                            <p class="text-xl sm:text-2xl font-bold text-orange-500" id="skippedRows">0</p>
                             <p class="text-xs text-gray-500" data-i18n="skipped">Skipped (Duplicates)</p>
                         </div>
                     </div>
@@ -268,44 +380,45 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             </div>
 
             <!-- Stores List Section -->
-            <div class="bg-white rounded-2xl card-shadow p-6 slide-up">
-                <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <div class="bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-4 sm:mb-6 gap-3">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800">
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-800">
                             <i class="fas fa-list text-purple-600 mr-2"></i><span data-i18n="allStores">All Stores</span>
                         </h2>
-                        <p class="text-gray-500 text-sm mt-1" data-i18n="manageStores">Manage store locations</p>
+                        <p class="text-gray-500 text-xs sm:text-sm mt-1" data-i18n="manageStores">Manage store locations</p>
                     </div>
-                    <div class="flex gap-3">
-                        <select id="filterBeat" onchange="filterStores()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    <div class="flex flex-wrap gap-2">
+                        <select id="filterBeat" onchange="filterStores()" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none flex-1 sm:flex-none">
                             <option value="" data-i18n="allBeats">All Beats</option>
                         </select>
-                        <select id="filterSalesman" onchange="filterStores()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                        <select id="filterSalesman" onchange="filterStores()" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none flex-1 sm:flex-none">
                             <option value="" data-i18n="allSalesmen">All Salesmen</option>
                         </select>
-                        <button onclick="clearAllStores()" class="bg-red-100 text-red-600 px-4 py-2 rounded-lg hover:bg-red-200 transition-all">
-                            <i class="fas fa-trash mr-2"></i><span data-i18n="clearAll">Clear All</span>
+                        <button onclick="clearAllStores()" class="bg-red-100 text-red-600 px-3 py-2 text-sm rounded-lg hover:bg-red-200 transition-all whitespace-nowrap">
+                            <i class="fas fa-trash mr-1 sm:mr-2"></i><span class="hidden sm:inline" data-i18n="clearAll">Clear All</span>
+                            <span class="sm:hidden">Clear</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Stores Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full">
+                <div class="table-container">
+                    <table class="w-full min-w-[500px]">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="shop">Shop</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="coordinates">Coordinates</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="salesman">Salesman</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="beat">Beat</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="actions">Actions</th>
+                                <th class="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="shop">Shop</th>
+                                <th class="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="coordinates">Coordinates</th>
+                                <th class="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="salesman">Salesman</th>
+                                <th class="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="beat">Beat</th>
+                                <th class="px-3 py-2 sm:px-4 sm:py-3 text-left text-xs font-semibold text-gray-600 uppercase" data-i18n="actions">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="storesTableBody" class="divide-y divide-gray-200">
                             <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                    <i class="fas fa-inbox text-4xl mb-2"></i>
-                                    <p data-i18n="noStores">No stores uploaded yet</p>
+                                <td colspan="5" class="px-3 py-4 sm:px-4 sm:py-8 text-center text-gray-500">
+                                    <i class="fas fa-inbox text-3xl sm:text-4xl mb-2"></i>
+                                    <p class="text-sm" data-i18n="noStores">No stores uploaded yet</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -313,12 +426,12 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 </div>
 
                 <!-- Pagination -->
-                <div id="pagination" class="hidden mt-4 flex items-center justify-between">
-                    <p class="text-sm text-gray-500"><span data-i18n="showing">Showing</span> <span id="showingCount">0</span> stores</p>
-                    <div class="flex gap-2">
-                        <button onclick="changePage(-1)" class="px-3 py-1 border rounded-lg hover:bg-gray-50" data-i18n="previous">Previous</button>
-                        <span id="pageInfo" class="px-3 py-1"><span data-i18n="page">Page</span> 1</span>
-                        <button onclick="changePage(1)" class="px-3 py-1 border rounded-lg hover:bg-gray-50" data-i18n="next">Next</button>
+                <div id="pagination" class="hidden mt-3 sm:mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4 text-xs sm:text-sm">
+                    <p class="text-gray-500 text-center"><span data-i18n="showing">Showing</span> <span id="showingCount">0</span> stores</p>
+                    <div class="flex gap-2 justify-center">
+                        <button onclick="changePage(-1)" class="px-3 py-1.5 border rounded-lg hover:bg-gray-50" data-i18n="previous">Previous</button>
+                        <span id="pageInfo" class="px-3 py-1.5"><span data-i18n="page">Page</span> 1</span>
+                        <button onclick="changePage(1)" class="px-3 py-1.5 border rounded-lg hover:bg-gray-50" data-i18n="next">Next</button>
                     </div>
                 </div>
             </div>
@@ -326,31 +439,32 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
     </div>
 
     <!-- Delivery Boy Dashboard -->
-    <div id="deliveryDashboard" class="hidden min-h-screen">
+    <div id="deliveryDashboard" class="hidden min-h-screen no-overflow-x">
         <!-- Delivery Header -->
-        <header class="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 sticky top-0 z-50">
-            <div class="max-w-6xl mx-auto flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-truck text-2xl"></i>
-                    <h1 class="text-xl font-bold" data-i18n="deliveryDashboard">Delivery Navigator</h1>
+        <header class="bg-gradient-to-r from-green-500 to-emerald-600 text-white p-3 sm:p-4 sticky top-0 z-50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <i class="fas fa-truck text-xl sm:text-2xl"></i>
+                    <h1 class="text-base sm:text-xl font-bold" data-i18n="deliveryDashboard">Delivery Navigator</h1>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 sm:space-x-4">
                     <!-- Language Toggle -->
-                    <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg transition-all flex items-center gap-2">
-                        <i class="fas fa-globe"></i>
-                        <span id="deliveryLangToggle">मराठी</span>
+                    <button onclick="toggleLanguage()" class="bg-white/20 hover:bg-white/30 px-2 py-2 sm:px-3 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-xs sm:text-sm">
+                        <i class="fas fa-globe text-sm"></i>
+                        <span id="deliveryLangToggle" class="hidden sm:inline">मराठी</span>
                     </button>
-                    <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-all">
-                        <i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="logout">Logout</span>
+                    <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-2 py-2 sm:px-4 sm:py-2 rounded-lg transition-all text-xs sm:text-sm">
+                        <i class="fas fa-sign-out-alt mr-1 hidden sm:inline"></i><span data-i18n="logout" class="hidden sm:inline">Logout</span>
+                        <i class="fas fa-sign-out-alt sm:hidden"></i>
                     </button>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-6xl mx-auto p-4 space-y-6">
+        <main class="p-2 sm:p-4 md:p-4 lg:max-w-6xl lg:mx-auto space-y-4 sm:space-y-6 no-overflow-x">
             <!-- Search Section -->
-            <div class="bg-white rounded-2xl card-shadow p-6 slide-up">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <div class="bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                     <i class="fas fa-search text-green-600 mr-2"></i><span data-i18n="findStore">Find Store</span>
                 </h2>
 
@@ -358,12 +472,12 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 <div class="relative">
                     <div class="flex gap-2">
                         <div class="relative flex-1">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <i class="fas fa-search absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                             <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search store by name..." 
-                                class="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none text-lg"
+                                class="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none text-base sm:text-lg"
                                 oninput="handleSearch(event)" onfocus="showRecentSearches()">
                         </div>
-                        <button onclick="performSearch()" class="bg-green-500 hover:bg-green-600 text-white px-6 rounded-xl transition-all">
+                        <button onclick="performSearch()" class="bg-green-500 hover:bg-green-600 text-white px-3 sm:px-6 rounded-xl transition-all">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
@@ -373,19 +487,19 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                     </div>
 
                     <!-- Recent Searches -->
-                    <div id="recentSearches" class="hidden mt-3">
-                        <p class="text-xs text-gray-500 mb-2"><span data-i18n="recentSearches">Recent Searches:</span></p>
+                    <div id="recentSearches" class="hidden mt-2 sm:mt-3">
+                        <p class="text-xs text-gray-500 mb-2" data-i18n="recentSearches">Recent Searches:</p>
                         <div id="recentSearchTags" class="flex flex-wrap gap-2">
                         </div>
                     </div>
                 </div>
 
                 <!-- Filters -->
-                <div class="mt-4 flex flex-wrap gap-3">
-                    <select id="deliveryFilterBeat" onchange="filterDeliveryStores()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                <div class="mt-3 sm:mt-4 flex flex-wrap gap-2">
+                    <select id="deliveryFilterBeat" onchange="filterDeliveryStores()" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none flex-1 sm:flex-none">
                         <option value="" data-i18n="allBeats">All Beats</option>
                     </select>
-                    <select id="deliveryFilterSalesman" onchange="filterDeliveryStores()" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none">
+                    <select id="deliveryFilterSalesman" onchange="filterDeliveryStores()" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none flex-1 sm:flex-none">
                         <option value="" data-i18n="allSalesmen">All Salesmen</option>
                     </select>
                 </div>
@@ -393,25 +507,25 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
 
             <!-- Search Results -->
             <div id="searchResultsSection" class="hidden">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-gray-800">
+                <div class="flex items-center justify-between mb-3 sm:mb-4">
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800">
                         <i class="fas fa-map-pin text-red-500 mr-2"></i><span data-i18n="searchResults">Search Results</span>
                         <span id="resultCount" class="text-sm font-normal text-gray-500">(0 <span data-i18n="found">found</span>)</span>
                     </h3>
                 </div>
-                <div id="searchResults" class="space-y-3">
+                <div id="searchResults" class="space-y-2 sm:space-y-3">
                 </div>
             </div>
 
             <!-- All Stores Grid -->
-            <div class="bg-white rounded-2xl card-shadow p-6 slide-up">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">
+            <div class="bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up">
+                <h2 class="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                     <i class="fas fa-th-large text-green-600 mr-2"></i><span data-i18n="allStores">All Stores</span>
                 </h2>
-                <div id="storesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="col-span-full text-center py-8 text-gray-500">
-                        <i class="fas fa-store text-4xl mb-2"></i>
-                        <p data-i18n="noStoresAvailable">No stores available. Please ask admin to upload data.</p>
+                <div id="storesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                    <div class="col-span-full text-center py-6 sm:py-8 text-gray-500">
+                        <i class="fas fa-store text-3xl sm:text-4xl mb-2"></i>
+                        <p class="text-sm sm:text-base" data-i18n="noStoresAvailable">No stores available. Please ask admin to upload data.</p>
                     </div>
                 </div>
             </div>
@@ -419,60 +533,60 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
     </div>
 
     <!-- Store Detail Modal -->
-    <div id="storeModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto slide-up">
-            <div class="gradient-bg text-white p-6 rounded-t-2xl">
+    <div id="storeModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+        <div class="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto slide-up modal-mobile sm:modal-desktop">
+            <div class="gradient-bg text-white p-4 sm:p-6 rounded-t-2xl">
                 <div class="flex items-start justify-between">
-                    <div>
-                        <h3 id="modalStoreName" class="text-2xl font-bold"></h3>
-                        <p id="modalStoreId" class="text-white/70 text-sm"></p>
+                    <div class="flex-1 min-w-0 pr-4">
+                        <h3 id="modalStoreName" class="text-xl sm:text-2xl font-bold truncate"></h3>
+                        <p id="modalStoreId" class="text-white/70 text-xs sm:text-sm"></p>
                     </div>
-                    <button onclick="closeModal()" class="text-white/80 hover:text-white text-2xl">
+                    <button onclick="closeModal()" class="text-white/80 hover:text-white text-xl sm:text-2xl flex-shrink-0">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
             </div>
-            <div class="p-6 space-y-4">
+            <div class="p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                        <i class="fas fa-map-marker-alt text-blue-600 text-lg sm:text-xl"></i>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-500" data-i18n="coordinates">Coordinates</p>
-                        <p id="modalCoords" class="font-semibold text-gray-800"></p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs sm:text-sm text-gray-500" data-i18n="coordinates">Coordinates</p>
+                        <p id="modalCoords" class="font-semibold text-gray-800 text-sm sm:text-base truncate"></p>
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-user text-purple-600 text-xl"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                        <i class="fas fa-user text-purple-600 text-lg sm:text-xl"></i>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-500" data-i18n="salesman">Salesman</p>
-                        <p id="modalSalesman" class="font-semibold text-gray-800"></p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs sm:text-sm text-gray-500" data-i18n="salesman">Salesman</p>
+                        <p id="modalSalesman" class="font-semibold text-gray-800 text-sm sm:text-base truncate"></p>
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-route text-orange-600 text-xl"></i>
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                        <i class="fas fa-route text-orange-600 text-lg sm:text-xl"></i>
                     </div>
-                    <div>
-                        <p class="text-sm text-gray-500" data-i18n="beat">Beat</p>
-                        <p id="modalBeat" class="font-semibold text-gray-800"></p>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs sm:text-sm text-gray-500" data-i18n="beat">Beat</p>
+                        <p id="modalBeat" class="font-semibold text-gray-800 text-sm sm:text-base truncate"></p>
                     </div>
                 </div>
                 
                 <!-- Map Preview -->
-                <div class="bg-gray-100 rounded-xl h-48 flex items-center justify-center">
+                <div class="bg-gray-100 rounded-xl h-40 sm:h-48 flex items-center justify-center">
                     <a id="mapLink" href="#" target="_blank" class="text-center group">
-                        <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-directions text-white text-2xl"></i>
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-directions text-white text-xl sm:text-2xl"></i>
                         </div>
-                        <p class="text-green-600 font-semibold" data-i18n="openMaps">Open in Google Maps</p>
-                        <p class="text-gray-500 text-sm" data-i18n="tapNavigate">Tap to navigate</p>
+                        <p class="text-green-600 font-semibold text-sm sm:text-base" data-i18n="openMaps">Open in Google Maps</p>
+                        <p class="text-gray-500 text-xs sm:text-sm" data-i18n="tapNavigate">Tap to navigate</p>
                     </a>
                 </div>
                 
-                <a id="mapBtn" href="#" target="_blank" class="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-4 rounded-xl font-semibold transition-all">
+                <a id="mapBtn" href="#" target="_blank" class="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-3 sm:py-4 rounded-xl font-semibold transition-all text-base sm:text-lg">
                     <i class="fas fa-navigation mr-2"></i><span data-i18n="startNavigation">Start Navigation</span>
                 </a>
             </div>
@@ -480,8 +594,8 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-xl shadow-lg z-50 slide-up">
-        <span id="toastMessage"></span>
+    <div id="toast" class="hidden fixed bottom-3 sm:bottom-4 left-3 right-3 sm:left-4 sm:right-4 sm:bottom-4 bg-gray-800 text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg z-50 slide-up">
+        <span id="toastMessage" class="text-sm sm:text-base"></span>
     </div>
 
     <script>
@@ -536,7 +650,7 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 password: "Password",
                 enterPassword: "Enter password",
                 loginBtn: "Login",
-                demoHint: "Delivery Boy App - Click to Start",
+                demoHint: "Demo: Click any role to login",
                 
                 // Admin Dashboard
                 adminDashboard: "Admin Dashboard",
@@ -639,7 +753,7 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 password: "संकेतशब्द",
                 enterPassword: "संकेतशब्द प्रविष्ट करा",
                 loginBtn: "लॉगिन",
-                demoHint: "डिलिव्हरी बॉय अॅप - सुरू करण्यासाठी क्लिक करा",
+                demoHint: "डेमो: कोणतीही भूमिका निवडा",
                 
                 // Admin Dashboard
                 adminDashboard: "अॅडमिन डॅशबोर्ड",
@@ -802,9 +916,11 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
         // ============================================
         // API CONFIGURATION
         // ============================================
-        const API_BASE = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api' 
-            : '/api';
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? '/.netlify/functions'
+            : '/.netlify/functions';
+
+        console.log('API Base:', API_BASE);
 
         // ============================================
         // API FUNCTIONS
@@ -905,18 +1021,55 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 searches = searches.slice(0, 10);
                 localStorage.setItem('recentSearches', JSON.stringify(searches));
             },
-            // Legacy methods for API compatibility
-            getStores: async () => {
-                const result = await API.getStores();
-                return result.stores || [];
+            
+            // Local cache for stores
+            _storeCache: null,
+            _cacheTime: null,
+            _cacheDuration: 60000, // 1 minute cache
+            
+            // Get stores with caching
+            getStores: async (forceRefresh = false) => {
+                const now = Date.now();
+                
+                // Return cached data if valid
+                if (!forceRefresh && DB._storeCache && DB._cacheTime && (now - DB._cacheTime < DB._cacheDuration)) {
+                    console.log('Returning cached stores');
+                    return DB._storeCache;
+                }
+                
+                try {
+                    const result = await API.getStores();
+                    DB._storeCache = result.stores || [];
+                    DB._cacheTime = now;
+                    console.log('Fetched stores from API:', DB._storeCache.length);
+                    return DB._storeCache;
+                } catch (error) {
+                    console.error('API Error, using cached data:', error);
+                    // Return cached data if API fails
+                    return DB._storeCache || [];
+                }
             },
+            
+            // Invalidate cache
+            invalidateCache: () => {
+                DB._storeCache = null;
+                DB._cacheTime = null;
+                console.log('Store cache invalidated');
+            },
+            
             setStores: async (stores) => {
                 // Stores are now managed via API, not localStorage
                 console.log('Stores are now persisted via API');
             },
+            
             getDataVisibility: async () => {
-                const settings = await API.getSettings();
-                return settings.dataVisible !== false;
+                try {
+                    const settings = await API.getSettings();
+                    return settings.dataVisible !== false;
+                } catch (error) {
+                    console.error('Error getting data visibility:', error);
+                    return true; // Default to visible
+                }
             }
         };
 
@@ -1050,74 +1203,40 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             }
         });
 
-        function parseCSV(file) {
+        async function parseCSV(file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 const content = e.target.result;
                 const lines = content.split('\n').filter(line => line.trim());
                 
                 if (lines.length < 2) {
-                    showToast('CSV file is empty', 'error');
+                    showToast(t('csvEmpty'), 'error');
                     return;
                 }
 
-                const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/['"]/g, ''));
-                const stores = DB.getStores();
-                
-                let inserted = 0;
-                let skipped = 0;
-
-                for (let i = 1; i < lines.length; i++) {
-                    const values = parseCSVLine(lines[i]);
-                    if (values.length < 3) continue;
-
-                    const storeData = {};
-                    headers.forEach((header, index) => {
-                        storeData[header] = values[index] ? values[index].trim().replace(/['"]/g, '') : '';
-                    });
-
-                    // Map headers to our schema
-                    const newStore = {
-                        id: Date.now() + i,
-                        shop: storeData.shop || storeData.store_name || storeData.name || storeData.store || 'Unknown Shop',
-                        latitude: parseFloat(storeData.latitude || storeData.lat || 0),
-                        longitude: parseFloat(storeData.longitude || storeData.lng || storeData.long || 0),
-                        salesman: storeData.salesman || storeData.salesman_name || 'Unassigned',
-                        beat: storeData.beat || storeData.beat_name || 'Unassigned',
-                        created_at: new Date().toISOString()
-                    };
-
-                    // Validate coordinates
-                    if (isNaN(newStore.latitude) || isNaN(newStore.longitude)) {
-                        skipped++;
-                        continue;
-                    }
-
-                    // Check for duplicates
-                    const isDuplicate = stores.some(s => 
-                        s.shop.toLowerCase() === newStore.shop.toLowerCase() &&
-                        Math.abs(s.latitude - newStore.latitude) < 0.0001 &&
-                        Math.abs(s.longitude - newStore.longitude) < 0.0001
-                    );
-
-                    if (isDuplicate) {
-                        skipped++;
+                try {
+                    // Upload to API
+                    const result = await API.uploadCSV(content);
+                    
+                    if (result.success) {
+                        // Show summary
+                        document.getElementById('uploadSummary').classList.remove('hidden');
+                        document.getElementById('totalRows').textContent = result.summary.total;
+                        document.getElementById('insertedRows').textContent = result.summary.inserted;
+                        document.getElementById('skippedRows').textContent = result.summary.skipped;
+                        
+                        // Invalidate cache and reload
+                        DB.invalidateCache();
+                        await loadAdminData();
+                        
+                        showToast(t('uploadSuccess') + ' ' + result.summary.inserted + ' ' + t('stores'));
                     } else {
-                        stores.push(newStore);
-                        inserted++;
+                        showToast(result.error || 'Upload failed', 'error');
                     }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showToast('Upload failed: ' + error.message, 'error');
                 }
-
-                DB.setStores(stores);
-                
-                // Show summary
-                document.getElementById('uploadSummary').classList.remove('hidden');
-                document.getElementById('totalRows').textContent = lines.length - 1;
-                document.getElementById('insertedRows').textContent = inserted;
-                document.getElementById('skippedRows').textContent = skipped;
-                
-                showToast(`Successfully imported ${inserted} stores!`);
-                loadAdminData();
             };
             reader.readAsText(file);
         }
@@ -1221,33 +1340,33 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
 
             if (isVisible) {
                 // Data is VISIBLE
-                statusCard.className = 'bg-white rounded-2xl card-shadow p-6 slide-up border-l-4 border-green-500';
-                statusIcon.className = 'w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4';
-                statusIcon.innerHTML = '<i class="fas fa-eye text-green-600 text-xl"></i>';
+                statusCard.className = 'bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up border-l-4 border-green-500';
+                statusIcon.className = 'w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0';
+                statusIcon.innerHTML = '<i class="fas fa-eye text-green-600 text-lg sm:text-xl"></i>';
                 statusTitle.textContent = t('dataVisible');
                 statusDesc.textContent = t('dataVisibleDesc');
-                actionButton.className = 'px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 bg-red-100 text-red-600 hover:bg-red-200';
+                actionButton.className = 'w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 bg-red-100 text-red-600 hover:bg-red-200 text-sm';
                 actionIcon.className = 'fas fa-eye-slash';
                 actionButton.innerHTML = '<i class="fas fa-eye-slash"></i> <span>' + t('hideData') + '</span>';
                 
                 if (headerToggle) {
-                    headerToggle.className = 'bg-green-500/30 hover:bg-green-500/40 px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-white';
+                    headerToggle.className = 'bg-green-500/30 hover:bg-green-500/40 px-2 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-white text-xs sm:text-sm';
                     headerIcon.className = 'fas fa-eye';
                     headerText.textContent = t('dataVisible');
                 }
             } else {
                 // Data is HIDDEN
-                statusCard.className = 'bg-white rounded-2xl card-shadow p-6 slide-up border-l-4 border-red-500';
-                statusIcon.className = 'w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4';
-                statusIcon.innerHTML = '<i class="fas fa-eye-slash text-red-600 text-xl"></i>';
+                statusCard.className = 'bg-white rounded-xl sm:rounded-2xl card-shadow p-3 sm:p-4 md:p-6 slide-up border-l-4 border-red-500';
+                statusIcon.className = 'w-10 h-10 sm:w-12 sm:h-12 bg-red-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0';
+                statusIcon.innerHTML = '<i class="fas fa-eye-slash text-red-600 text-lg sm:text-xl"></i>';
                 statusTitle.textContent = t('dataHidden');
                 statusDesc.textContent = t('dataHiddenDesc');
-                actionButton.className = 'px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 bg-green-100 text-green-600 hover:bg-green-200';
+                actionButton.className = 'w-full sm:w-auto px-4 sm:px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 bg-green-100 text-green-600 hover:bg-green-200 text-sm';
                 actionIcon.className = 'fas fa-eye';
                 actionButton.innerHTML = '<i class="fas fa-eye"></i> <span>' + t('showData') + '</span>';
                 
                 if (headerToggle) {
-                    headerToggle.className = 'bg-red-500/30 hover:bg-red-500/40 px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-white';
+                    headerToggle.className = 'bg-red-500/30 hover:bg-red-500/40 px-2 py-2 sm:px-4 sm:py-2 rounded-lg transition-all flex items-center gap-2 text-white text-xs sm:text-sm';
                     headerIcon.className = 'fas fa-eye-slash';
                     headerText.textContent = t('dataHidden');
                 }
@@ -1305,9 +1424,9 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             if (pageStores.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                            <i class="fas fa-inbox text-4xl mb-2"></i>
-                            <p>No stores found</p>
+                        <td colspan="5" class="px-3 py-4 sm:px-4 sm:py-8 text-center text-gray-500">
+                            <i class="fas fa-inbox text-3xl sm:text-4xl mb-2"></i>
+                            <p class="text-sm">No stores found</p>
                         </td>
                     </tr>
                 `;
@@ -1317,31 +1436,31 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
 
             tbody.innerHTML = pageStores.map(store => `
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3">
+                    <td class="px-3 py-2 sm:px-4 sm:py-3">
                         <div class="flex items-center">
-                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
                                 <i class="fas fa-store text-purple-600 text-sm"></i>
                             </div>
-                            <span class="font-medium text-gray-800">${escapeHtml(store.shop)}</span>
+                            <span class="font-medium text-gray-800 text-sm sm:text-base truncate">${escapeHtml(store.shop)}</span>
                         </div>
                     </td>
-                    <td class="px-4 py-3">
-                        <code class="bg-gray-100 px-2 py-1 rounded text-sm">${store.latitude.toFixed(4)}, ${store.longitude.toFixed(4)}</code>
+                    <td class="px-3 py-2 sm:px-4 sm:py-3">
+                        <code class="bg-gray-100 px-1.5 sm:px-2 py-1 rounded text-xs sm:text-sm">${store.latitude.toFixed(4)}, ${store.longitude.toFixed(4)}</code>
                     </td>
-                    <td class="px-4 py-3 text-gray-600">${escapeHtml(store.salesman)}</td>
-                    <td class="px-4 py-3">
-                        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">${escapeHtml(store.beat)}</span>
+                    <td class="px-3 py-2 sm:px-4 sm:py-3 text-gray-600 text-sm sm:text-base">${escapeHtml(store.salesman)}</td>
+                    <td class="px-3 py-2 sm:px-4 sm:py-3">
+                        <span class="bg-blue-100 text-blue-700 px-1.5 sm:px-2 py-1 rounded-full text-xs">${escapeHtml(store.beat)}</span>
                     </td>
-                    <td class="px-4 py-3">
-                        <div class="flex gap-2">
-                            <button onclick="openStoreModal(${store.id})" class="text-blue-600 hover:text-blue-800 p-1" title="View">
-                                <i class="fas fa-eye"></i>
+                    <td class="px-3 py-2 sm:px-4 sm:py-3">
+                        <div class="flex gap-1 sm:gap-2">
+                            <button onclick="openStoreModal(${store.id})" class="text-blue-600 hover:text-blue-800 p-1.5 sm:p-1" title="View">
+                                <i class="fas fa-eye text-sm"></i>
                             </button>
-                            <button onclick="deleteStore(${store.id})" class="text-red-600 hover:text-red-800 p-1" title="Delete">
-                                <i class="fas fa-trash"></i>
+                            <button onclick="deleteStore(${store.id})" class="text-red-600 hover:text-red-800 p-1.5 sm:p-1" title="Delete">
+                                <i class="fas fa-trash text-sm"></i>
                             </button>
-                            <a href="https://www.google.com/maps?q=${store.latitude},${store.longitude}" target="_blank" class="text-green-600 hover:text-green-800 p-1" title="Navigate">
-                                <i class="fas fa-directions"></i>
+                            <a href="https://www.google.com/maps?q=${store.latitude},${store.longitude}" target="_blank" class="text-green-600 hover:text-green-800 p-1.5 sm:p-1" title="Navigate">
+                                <i class="fas fa-directions text-sm"></i>
                             </a>
                         </div>
                     </td>
@@ -1393,13 +1512,13 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             if (!isVisible) {
                 const grid = document.getElementById('storesGrid');
                 grid.innerHTML = `
-                    <div class="col-span-full text-center py-16">
-                        <div class="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-lock text-red-500 text-4xl"></i>
+                    <div class="col-span-full text-center py-8 sm:py-16">
+                        <div class="w-16 h-16 sm:w-24 sm:h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <i class="fas fa-lock text-red-500 text-3xl sm:text-4xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2" data-i18n="dataHidden">${t('dataHidden')}</h3>
-                        <p class="text-gray-500">${t('dataHiddenDesc')}</p>
-                        <p class="text-gray-400 text-sm mt-4"><i class="fas fa-info-circle mr-1"></i> Please contact admin</p>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2" data-i18n="dataHidden">${t('dataHidden')}</h3>
+                        <p class="text-gray-500 text-sm sm:text-base">${t('dataHiddenDesc')}</p>
+                        <p class="text-gray-400 text-xs sm:text-sm mt-3 sm:mt-4"><i class="fas fa-info-circle mr-1"></i> Please contact admin</p>
                     </div>
                 `;
                 return false;
@@ -1441,36 +1560,36 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             
             if (stores.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full text-center py-8 text-gray-500">
-                        <i class="fas fa-store text-4xl mb-2"></i>
-                        <p>No stores available</p>
+                    <div class="col-span-full text-center py-6 sm:py-8 text-gray-500">
+                        <i class="fas fa-store text-3xl sm:text-4xl mb-2"></i>
+                        <p class="text-sm sm:text-base">No stores available</p>
                     </div>
                 `;
                 return;
             }
 
             grid.innerHTML = stores.map(store => `
-                <div class="store-card bg-white border border-gray-200 rounded-xl p-4 cursor-pointer transition-all" onclick="openStoreModal(${store.id})">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                <i class="fas fa-store text-green-600"></i>
+                <div class="store-card bg-white border border-gray-200 rounded-xl p-3 sm:p-4 cursor-pointer transition-all" onclick="openStoreModal(${store.id})">
+                    <div class="flex items-start justify-between mb-2 sm:mb-3">
+                        <div class="flex items-center min-w-0 flex-1">
+                            <div class="w-9 h-9 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+                                <i class="fas fa-store text-green-600 text-sm"></i>
                             </div>
-                            <div>
-                                <h4 class="font-semibold text-gray-800 line-clamp-1">${escapeHtml(store.shop)}</h4>
+                            <div class="min-w-0 flex-1">
+                                <h4 class="font-semibold text-gray-800 text-sm sm:text-base truncate">${escapeHtml(store.shop)}</h4>
                                 <p class="text-xs text-gray-500">${escapeHtml(store.beat)}</p>
                             </div>
                         </div>
                         <button onclick="event.stopPropagation(); openMap(${store.latitude}, ${store.longitude})" 
-                            class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all">
-                            <i class="fas fa-directions"></i>
+                            class="w-9 h-9 sm:w-10 sm:h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all flex-shrink-0">
+                            <i class="fas fa-directions text-sm"></i>
                         </button>
                     </div>
-                    <div class="flex items-center justify-between text-sm">
-                        <span class="text-gray-500">
+                    <div class="flex items-center justify-between text-xs sm:text-sm">
+                        <span class="text-gray-500 truncate mr-2">
                             <i class="fas fa-user mr-1"></i>${escapeHtml(store.salesman)}
                         </span>
-                        <code class="bg-gray-100 px-2 py-1 rounded text-xs">${store.latitude.toFixed(3)}, ${store.longitude.toFixed(3)}</code>
+                        <code class="bg-gray-100 px-1.5 sm:px-2 py-1 rounded text-xs flex-shrink-0">${store.latitude.toFixed(3)}, ${store.longitude.toFixed(3)}</code>
                     </div>
                 </div>
             `).join('');
@@ -1515,24 +1634,24 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             
             if (matches.length === 0) {
                 dropdown.innerHTML = `
-                    <div class="p-4 text-center text-gray-500">
+                    <div class="p-3 sm:p-4 text-center text-gray-500">
                         <i class="fas fa-search text-2xl mb-2"></i>
-                        <p>No stores found</p>
+                        <p class="text-sm">No stores found</p>
                     </div>
                 `;
             } else {
                 dropdown.innerHTML = matches.map(store => `
-                    <div class="autocomplete-item px-4 py-3 cursor-pointer border-b border-gray-100 last:border-0" 
+                    <div class="autocomplete-item px-3 sm:px-4 py-2 sm:py-3 cursor-pointer border-b border-gray-100 last:border-0" 
                          onclick="selectStore(${store.id}, '${escapeHtml(store.shop)}')">
                         <div class="flex items-center">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                <i class="fas fa-store text-green-600 text-sm"></i>
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+                                <i class="fas fa-store text-green-600 text-xs sm:text-sm"></i>
                             </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-800">${escapeHtml(store.shop)}</p>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium text-gray-800 text-sm sm:text-base truncate">${escapeHtml(store.shop)}</p>
                                 <p class="text-xs text-gray-500">${escapeHtml(store.beat)} • ${escapeHtml(store.salesman)}</p>
                             </div>
-                            <i class="fas fa-chevron-right text-gray-400"></i>
+                            <i class="fas fa-chevron-right text-gray-400 text-sm"></i>
                         </div>
                     </div>
                 `).join('');
@@ -1575,30 +1694,30 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
                 resultsSection.classList.remove('hidden');
                 document.getElementById('resultCount').textContent = '(0 found)';
                 resultsDiv.innerHTML = `
-                    <div class="text-center py-8 text-gray-500 bg-white rounded-xl">
-                        <i class="fas fa-search text-4xl mb-2"></i>
-                        <p>No stores found for "${escapeHtml(searchQuery)}"</p>
+                    <div class="text-center py-6 sm:py-8 text-gray-500 bg-white rounded-xl">
+                        <i class="fas fa-search text-3xl sm:text-4xl mb-2"></i>
+                        <p class="text-sm sm:text-base">No stores found for "${escapeHtml(searchQuery)}"</p>
                     </div>
                 `;
             } else {
                 resultsSection.classList.remove('hidden');
                 document.getElementById('resultCount').textContent = `(${matches.length} found)`;
                 resultsDiv.innerHTML = matches.map(store => `
-                    <div class="bg-white rounded-xl p-4 border border-gray-200 hover:border-green-500 cursor-pointer transition-all" 
+                    <div class="bg-white rounded-xl p-3 sm:p-4 border border-gray-200 hover:border-green-500 cursor-pointer transition-all" 
                          onclick="openStoreModal(${store.id})">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-store text-green-600 text-xl"></i>
+                            <div class="flex items-center min-w-0 flex-1">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-full flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
+                                    <i class="fas fa-store text-green-600 text-lg sm:text-xl"></i>
                                 </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">${escapeHtml(store.shop)}</h4>
-                                    <p class="text-sm text-gray-500">${escapeHtml(store.beat)} • ${escapeHtml(store.salesman)}</p>
+                                <div class="min-w-0 flex-1">
+                                    <h4 class="font-semibold text-gray-800 text-sm sm:text-base truncate">${escapeHtml(store.shop)}</h4>
+                                    <p class="text-xs sm:text-sm text-gray-500">${escapeHtml(store.beat)} • ${escapeHtml(store.salesman)}</p>
                                 </div>
                             </div>
                             <button onclick="event.stopPropagation(); openMap(${store.latitude}, ${store.longitude})" 
-                                class="w-12 h-12 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all">
-                                <i class="fas fa-directions"></i>
+                                class="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center text-white transition-all flex-shrink-0">
+                                <i class="fas fa-directions text-sm"></i>
                             </button>
                         </div>
                     </div>
@@ -1619,7 +1738,7 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             recentDiv.classList.remove('hidden');
             tagsDiv.innerHTML = searches.map(search => `
                 <button onclick="selectSearch('${escapeHtml(search)}')" 
-                    class="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700 transition-all">
+                    class="bg-gray-100 hover:bg-gray-200 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm text-gray-700 transition-all">
                     ${escapeHtml(search)}
                 </button>
             `).join('');
@@ -1693,7 +1812,7 @@ XYZ Mart,28.6128,77.2294,Mike,South Zone</pre>
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             
-            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl shadow-lg z-50 slide-up ${
+            toast.className = `fixed bottom-3 sm:bottom-4 left-3 right-3 sm:left-4 sm:right-4 px-4 sm:px-6 py-3 rounded-xl shadow-lg z-50 slide-up ${
                 type === 'error' ? 'bg-red-500' : 'bg-gray-800'
             } text-white`;
             

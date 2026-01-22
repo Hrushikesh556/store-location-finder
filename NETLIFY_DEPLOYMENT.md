@@ -1,13 +1,13 @@
-# 🚀 Production Deployment Guide - Vercel + MySQL Backend
+# 🚀 Netlify Deployment Guide - Store Location Finder
 
-Complete guide to deploy the Store Location Finder App with persistent database storage.
+Complete guide to deploy the Store Location Finder App to Netlify with backend persistence.
 
 ## 📋 Overview
 
 **What you're deploying:**
 - ✅ Frontend: Single-page HTML application
-- ✅ Backend: Vercel Serverless Functions
-- ✅ Database: MySQL with Prisma ORM
+- ✅ Backend: Netlify Serverless Functions
+- ✅ Database: MySQL with Prisma ORM (PlanetScale recommended)
 - ✅ CSV Upload: Persists to database
 - ✅ Data Visibility: Admin toggle control
 
@@ -19,7 +19,7 @@ Complete guide to deploy the Store Location Finder App with persistent database 
 - ✅ Completely FREE tier available
 - ✅ Serverless MySQL database
 - ✅ Auto-scaling
-- ✅ Vercel optimized
+- ✅ Netlify optimized
 
 ### Create PlanetScale Account
 1. Go to [planetscale.com](https://planetscale.com) and sign up (use GitHub)
@@ -40,7 +40,7 @@ Complete guide to deploy the Store Location Finder App with persistent database 
    ```
    mysql://xxxxx:pscale_pw_xxxxx@aws.connect.psdb.cloud/store_locator?sslaccept=strict
    ```
-5. **Save this URL** - you'll need it for Vercel
+5. **Save this URL** - you'll need it for Netlify
 
 ---
 
@@ -68,46 +68,44 @@ git push -u origin main
 
 ---
 
-## 🌐 Step 3: Deploy to Vercel
+## 🌐 Step 3: Deploy to Netlify
 
-### 3.1 Create Vercel Account
-1. Go to [vercel.com](https://vercel.com)
+### 3.1 Create Netlify Account
+1. Go to [netlify.com](https://netlify.com)
 2. Click "Sign Up" (use GitHub for easy setup)
-3. Authorize Vercel to access your GitHub
+3. Authorize Netlify to access your GitHub
 
 ### 3.2 Import Project
-1. On Vercel dashboard, click **"Add New"** → **"Project"**
+1. On Netlify dashboard, click **"Add new site"** → **"Import an existing project"**
 2. Find and select `store-location-finder` repository
-3. Click **"Import"**
+3. Click **"Import site"**
 
-### 3.3 Configure Project Settings
+### 3.3 Configure Build Settings
 
-**Framework Preset**: Select "Other"
+**Build command**: `npm install && npx prisma generate`
 
-**Root Directory**: `./` (default)
+**Publish directory**: `.` (root)
 
-**Build & Output Settings**:
-- **Build Command**: Leave empty
-- **Output Directory**: Leave empty
+**Base directory**: Leave empty
 
 ### 3.4 Add Environment Variables (CRITICAL!)
 
-In the "Environment Variables" section, add:
+Scroll down to "Environment variables" and add:
 
-| Key | Value | Environments |
-|-----|-------|--------------|
-| `DATABASE_URL` | (Your PlanetScale connection string) | **All** (Production, Preview, Development) |
-| `ADMIN_USERNAME` | `Harshil` | Production |
-| `ADMIN_PASSWORD` | `Harshil@2003` | Production |
+| Key | Value | Scope |
+|-----|-------|-------|
+| `DATABASE_URL` | (Your PlanetScale connection string) | All |
+| `ADMIN_USERNAME` | `Harshil` | All |
+| `ADMIN_PASSWORD` | `Harshil@2003` | All |
 
 **Important**: 
 - For `DATABASE_URL`, use the one you copied from PlanetScale
 - Include `?sslaccept=strict` at the end
-- Select "All" for environments so it works in preview too
+- Scope should be "All" (Development, Deploy Preview, Production)
 
 ### 3.5 Deploy
-1. Click **"Deploy"**
-2. Wait for deployment to complete (1-3 minutes)
+1. Click **"Deploy site"**
+2. Wait for deployment to complete (2-5 minutes)
 3. Your app is live! 🎉
 
 ---
@@ -121,7 +119,7 @@ After first deployment, create the database tables:
 # Install dependencies locally
 npm install
 
-# Set DATABASE_URL in local .env
+# Create .env file locally
 echo "DATABASE_URL=your_planetscale_url" > .env
 
 # Generate Prisma Client
@@ -131,13 +129,19 @@ npx prisma generate
 npx prisma db push
 ```
 
-### Option B: Using Vercel CLI
+### Option B: Using Netlify CLI
 ```bash
-# Install Vercel CLI
-npm i -g vercel
+# Install Netlify CLI
+npm i -g netlify-cli
+
+# Login
+netlify login
+
+# Link to your site
+netlify link
 
 # Pull environment variables
-vercel env pull .env
+netlify env:pull .env
 
 # Push schema
 npx prisma db push
@@ -155,10 +159,10 @@ This creates:
 ### 5.1 Test API Endpoints
 ```bash
 # Test stores endpoint
-curl https://your-app.vercel.app/api/stores
+curl https://your-site.netlify.app/.netlify/functions/stores
 
 # Test settings endpoint
-curl https://your-app.vercel.app/api/settings
+curl https://your-site.netlify.app/.netlify/functions/settings
 ```
 
 Expected response:
@@ -172,13 +176,13 @@ Expected response:
 ```
 
 ### 5.2 Test Admin Features
-1. Visit: `https://your-app.vercel.app/#/admin`
+1. Visit: `https://your-site.netlify.app/#/admin`
 2. Login with `Harshil` / `Harshil@2003`
 3. Upload the provided `sample-stores.csv`
 4. Verify upload summary shows inserted stores
 
 ### 5.3 Test Delivery Features
-1. Visit: `https://your-app.vercel.app/`
+1. Visit: `https://your-site.netlify.app/`
 2. Click "Delivery Boy Login"
 3. Search for stores
 4. Click navigation button to open Google Maps
@@ -187,17 +191,18 @@ Expected response:
 
 ## 🎨 Step 6: Custom Domain (Optional)
 
-### Add Custom Domain on Vercel
-1. Go to project **Settings** → **Domains**
-2. Add your domain (e.g., `store.yourdomain.com`)
-3. Vercel will show DNS records to add
+### Add Custom Domain on Netlify
+1. Go to **Site configuration** → **Domain management**
+2. Click **"Add custom domain"**
+3. Enter your domain (e.g., `store.yourdomain.com`)
+4. Netlify will show DNS records to add
 
 ### Update DNS at Your Registrar
-Go to your domain provider (Namecheap, GoDaddy, etc.) and add:
+Go to your domain provider (Namecheap, GoDaddy, Cloudflare) and add:
 
 | Type | Name | Value |
 |------|------|-------|
-| CNAME | store | cname.vercel-dns.com |
+| CNAME | store | your-site-name.netlify.app |
 
 ---
 
@@ -229,7 +234,7 @@ git commit -m "Your change description"
 git push origin main
 ```
 
-**Vercel auto-deploys on push!** 🚀
+**Netlify auto-deploys on push!** 🚀
 
 ### Update Database Schema
 ```bash
@@ -251,26 +256,26 @@ git push
 
 ### Database Connection Error
 **Solution**: 
-1. Verify `DATABASE_URL` in Vercel environment variables
+1. Verify `DATABASE_URL` in Netlify environment variables
 2. Ensure it includes `?sslaccept=strict` for PlanetScale
 3. Check database branch is "main"
 
-### API Returns 404
+### Function Returns 404
 **Solution**:
-1. Ensure `api/` folder is at repository root
+1. Ensure `netlify/functions/` folder is at repository root
 2. Check files were pushed to GitHub
-3. Redeploy from Vercel dashboard
+3. Check `netlify.toml` has correct redirect rules
 
 ### Data Not Persisting
 **Solution**:
 1. Check browser console for API errors
-2. View Vercel function logs
+2. View Netlify function logs (Functions tab)
 3. Test API with curl
 4. Verify database has tables with `npx prisma studio`
 
 ### Environment Variables Not Working
 **Solution**:
-1. Go to Vercel Dashboard → Project → Settings → Environment Variables
+1. Go to Site configuration → Environment variables
 2. Add variables for All environments
 3. Redeploy from Deployments tab
 
@@ -278,7 +283,7 @@ git push
 
 ## 📈 Monitoring
 
-### Vercel Dashboard
+### Netlify Dashboard
 - View real-time logs
 - Monitor function execution time
 - Check bandwidth usage
@@ -306,15 +311,27 @@ git push
 
 | Service | Plan | Cost | Limits |
 |---------|------|------|--------|
-| **Vercel** | Hobby | **FREE** | 100GB bandwidth, 6k minutes serverless |
-| **PlanetScale** | Scaler Pro | **FREE** | 5GB storage, 1B reads/month |
+| **Netlify** | Free | **$0/month** | 100GB bandwidth, 125k invocations/month |
+| **PlanetScale** | Scaler Pro | **$0/month** | 5GB storage, 1B reads/month |
 | **Total** | - | **$0/month** | - |
+
+### When to Upgrade
+
+**Netlify Pro** ($19/month):
+- 400GB bandwidth
+- 1000k invocations
+- Unlimited team members
+
+**PlanetScale Pro** ($29/month):
+- More storage
+- More reads/writes
+- Higher connection limits
 
 ---
 
 ## 📞 Support & Resources
 
-- [Vercel Docs](https://vercel.com/docs)
+- [Netlify Docs](https://docs.netlify.com)
 - [Prisma Docs](https://www.prisma.io/docs)
 - [PlanetScale Docs](https://docs.planetscale.com)
 - [Open an Issue](https://github.com/yourusername/store-location-finder/issues)
@@ -325,15 +342,15 @@ git push
 
 Before going live:
 
-- [x] Database set up and accessible
-- [x] `DATABASE_URL` added to Vercel environment
-- [x] Admin credentials set in environment
-- [x] Prisma schema pushed to database
-- [x] API endpoints tested
-- [x] CSV upload tested
-- [x] Data visibility toggle tested
-- [x] Delivery boy access tested
-- [x] Mobile responsiveness tested
+- [ ] Database set up and accessible
+- [ ] `DATABASE_URL` added to Netlify environment
+- [ ] Admin credentials set in environment
+- [ ] Prisma schema pushed to database
+- [ ] API endpoints tested
+- [ ] CSV upload tested
+- [ ] Data visibility toggle tested
+- [ ] Delivery boy access tested
+- [ ] Mobile responsiveness tested
 - [ ] Custom domain configured (optional)
 - [ ] Error monitoring set up (optional)
 
@@ -342,13 +359,18 @@ Before going live:
 ## 🎉 Your App is Live!
 
 **Public URLs:**
-- 🏠 Main App: `https://your-app.vercel.app/`
-- 👨‍💼 Admin: `https://your-app.vercel.app/#/admin`
-- 📱 Delivery: `https://your-app.vercel.app/`
+- 🏠 Main App: `https://your-site.netlify.app/`
+- 👨‍💼 Admin: `https://your-site.netlify.app/#/admin`
+- 📱 Delivery: `https://your-site.netlify.app/`
 
 **Admin Credentials:**
 - Username: `Harshil`
 - Password: `Harshil@2003`
+
+**API Endpoints:**
+- Stores: `/.netlify/functions/stores`
+- Upload CSV: `/.netlify/functions/upload-csv`
+- Settings: `/.netlify/functions/settings`
 
 ---
 

@@ -1,24 +1,26 @@
 {
   "name": "store-location-finder",
-  "version": "2.0.0",
-  "description": "Store Location Finder App for Delivery Personnel with Vercel Backend",
+  "version": "4.0.0",
+  "description": "Store Location Finder App for Delivery Personnel - Netlify Ready",
   "scripts": {
-    "dev": "concurrently \"vercel dev\" \"serve -s . -l 3000\"",
+    "dev": "netlify dev",
     "build": "prisma generate",
-    "start": "vercel dev",
+    "start": "netlify dev",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:reset": "prisma db push --force-reset",
+    "deploy": "netlify deploy --prod"
   },
   "dependencies": {
-    "@prisma/client": "^5.7.0",
-    "prisma": "^5.7.0"
+    "@prisma/client": "^6.0.0"
   },
   "devDependencies": {
+    "prisma": "^6.0.0",
     "concurrently": "^8.2.2",
     "serve": "^14.2.1",
-    "vercel": "^32.7.2"
+    "vercel": "^39.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
